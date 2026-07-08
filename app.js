@@ -173,7 +173,10 @@ window.addEventListener("appinstalled", () => {
 updateInstallMessage();
 
 if ("serviceWorker" in navigator && location.protocol !== "file:") {
-  navigator.serviceWorker.register("./sw.js").catch(() => {});
+  navigator.serviceWorker
+    .register("./sw.js")
+    .then((registration) => registration.update())
+    .catch(() => {});
 }
 
 function openInstallFlow() {
