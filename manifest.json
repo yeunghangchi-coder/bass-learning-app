@@ -1,0 +1,20 @@
+{
+  "name": "贝斯学习记录",
+  "short_name": "贝斯记录",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
+  "orientation": "portrait",
+  "background_color": "#f5f1e8",
+  "theme_color": "#c6402f",
+  "description": "快速记录贝斯练习、计时和连续学习天数。",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
