@@ -1,5 +1,39 @@
 const STORAGE_KEY = "bass-learning-records";
 const INSTALL_DISMISSED_KEY = "bass-learning-install-dismissed";
+const DAILY_PLANS = [
+  {
+    title: "15 分钟基础稳拍",
+    steps: [
+      { topic: "空弦节奏", type: "节奏", minutes: 5 },
+      { topic: "爬格子 1-2-3-4", type: "指法", minutes: 5 },
+      { topic: "节拍器慢练", type: "节奏", minutes: 5 },
+    ],
+  },
+  {
+    title: "20 分钟手指控制",
+    steps: [
+      { topic: "换弦控制", type: "指法", minutes: 7 },
+      { topic: "爬格子 1-2-3-4", type: "指法", minutes: 8 },
+      { topic: "慢速复盘", type: "节奏", minutes: 5 },
+    ],
+  },
+  {
+    title: "20 分钟歌曲推进",
+    steps: [
+      { topic: "空弦热身", type: "节奏", minutes: 5 },
+      { topic: "歌曲段落", type: "歌曲", minutes: 10 },
+      { topic: "难点慢练", type: "歌曲", minutes: 5 },
+    ],
+  },
+  {
+    title: "15 分钟音名熟悉",
+    steps: [
+      { topic: "音名和品位", type: "乐理", minutes: 5 },
+      { topic: "节拍器慢练", type: "节奏", minutes: 5 },
+      { topic: "换弦控制", type: "指法", minutes: 5 },
+    ],
+  },
+];
 
 const form = document.querySelector("#entryForm");
 const recordsList = document.querySelector("#recordsList");
@@ -23,6 +57,14 @@ const todayButton = document.querySelector("#todayButton");
 const timerDisplay = document.querySelector("#timerDisplay");
 const timerButton = document.querySelector("#timerButton");
 const saveTimerButton = document.querySelector("#saveTimerButton");
+const planTitle = document.querySelector("#planTitle");
+const planTotal = document.querySelector("#planTotal");
+const planSteps = document.querySelector("#planSteps");
+const usePlanButton = document.querySelector("#usePlanButton");
+const weekMinutes = document.querySelector("#weekMinutes");
+const weekDays = document.querySelector("#weekDays");
+const weekBars = document.querySelector("#weekBars");
+const weekFocus = document.querySelector("#weekFocus");
 const installButton = document.querySelector("#installButton");
 const installCard = document.querySelector("#installCard");
 const installCardButton = document.querySelector("#installCardButton");
@@ -40,10 +82,12 @@ let selectedDuration = durationButtons[2];
 let timerStartedAt = null;
 let timerInterval = null;
 let deferredInstallPrompt = null;
+let todaysPlan = getTodaysPlan();
 
 dateInput.value = toDateInputValue(new Date());
 applyPreset(selectedPreset);
 applyDuration(selectedDuration);
+renderPlan();
 render();
 
 form.addEventListener("submit", (event) => {
@@ -117,6 +161,21 @@ quickSaveButton.addEventListener("click", () => {
     mood: moodInput.value,
     notes: notesInput.value.trim(),
   });
+});
+
+usePlanButton.addEventListener("click", () => {
+  const minutes = todaysPlan.steps.reduce((sum, step) => sum + step.minutes, 0);
+  const primaryStep = todaysPlan.steps[0];
+  topicInput.value = todaysPlan.steps.map((step) => step.topic).join(" + ");
+  minutesInput.value = minutes;
+  const typeInput = document.querySelector(`input[name="type"][value="${primaryStep.type}"]`);
+  if (typeInput) typeInput.checked = true;
+  selectedPreset?.classList.remove("selected");
+  durationButtons.forEach((button) => button.classList.remove("selected"));
+  quickSaveButton.textContent = "保存这个计划";
+  setTimeout(() => {
+    quickSaveButton.textContent = "保存这次练习";
+  }, 1200);
 });
 
 todayButton.addEventListener("click", () => {
@@ -317,7 +376,25 @@ function showSavedState() {
 
 function render() {
   renderStats();
+  renderWeekStats();
   renderRecords();
+}
+
+function renderPlan() {
+  const minutes = todaysPlan.steps.reduce((sum, step) => sum + step.minutes, 0);
+  planTitle.textContent = todaysPlan.title;
+  planTotal.textContent = `${minutes} 分`;
+  planSteps.innerHTML = "";
+
+  todaysPlan.steps.forEach((step) => {
+    const item = document.createElement("div");
+    item.className = "plan-step";
+    item.innerHTML = `
+      <span>${step.topic}</span>
+      <strong>${step.minutes} 分</strong>
+    `;
+    planSteps.append(item);
+  });
 }
 
 function renderStats() {
@@ -331,6 +408,38 @@ function renderStats() {
   totalMinutes.textContent =
     grandTotal < 60 ? `${grandTotal} 分钟` : `${(grandTotal / 60).toFixed(1)} 小时`;
   streakDays.textContent = `${calculateStreak(records)} 天`;
+}
+
+function renderWeekStats() {
+  const weekDates = getCurrentWeekDates();
+  const totals = weekDates.map((date) => ({
+    date,
+    minutes: records
+      .filter((record) => record.date === date)
+      .reduce((sum, record) => sum + record.minutes, 0),
+  }));
+  const weekTotal = totals.reduce((sum, day) => sum + day.minutes, 0);
+  const practicedDays = totals.filter((day) => day.minutes > 0).length;
+  const maxMinutes = Math.max(...totals.map((day) => day.minutes), 1);
+
+  weekMinutes.textContent = weekTotal < 60 ? `${weekTotal} 分钟` : `${(weekTotal / 60).toFixed(1)} 小时`;
+  weekDays.textContent =
+    practicedDays > 0 ? `本周练了 ${practicedDays} 天` : "本周还没开始记录";
+  weekBars.innerHTML = "";
+
+  totals.forEach((day) => {
+    const bar = document.createElement("div");
+    bar.className = "week-bar";
+    bar.innerHTML = `
+      <div class="bar-track">
+        <span style="height: ${Math.max((day.minutes / maxMinutes) * 100, day.minutes ? 18 : 4)}%"></span>
+      </div>
+      <small>${formatWeekday(day.date)}</small>
+    `;
+    weekBars.append(bar);
+  });
+
+  weekFocus.textContent = getWeeklyFocus(weekDates);
 }
 
 function renderRecords() {
@@ -390,6 +499,37 @@ function calculateStreak(items) {
   return count;
 }
 
+function getTodaysPlan() {
+  const index = new Date().getDay() % DAILY_PLANS.length;
+  return DAILY_PLANS[index];
+}
+
+function getCurrentWeekDates() {
+  const today = new Date();
+  const mondayOffset = (today.getDay() + 6) % 7;
+  const monday = new Date(today);
+  monday.setDate(today.getDate() - mondayOffset);
+
+  return Array.from({ length: 7 }, (_, index) => {
+    const date = new Date(monday);
+    date.setDate(monday.getDate() + index);
+    return toDateInputValue(date);
+  });
+}
+
+function getWeeklyFocus(weekDates) {
+  const counts = records
+    .filter((record) => weekDates.includes(record.date))
+    .reduce((map, record) => {
+      map[record.type] = (map[record.type] || 0) + record.minutes;
+      return map;
+    }, {});
+  const top = Object.entries(counts).sort((a, b) => b[1] - a[1])[0];
+
+  if (!top) return "多练几次后，这里会显示你最近最常练的方向。";
+  return `本周最多练的是${top[0]}，累计 ${top[1]} 分钟。`;
+}
+
 function toDateInputValue(date) {
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, "0");
@@ -403,6 +543,12 @@ function formatDate(value) {
     day: "numeric",
     weekday: "short",
   }).format(new Date(`${value}T00:00:00`));
+}
+
+function formatWeekday(value) {
+  return new Intl.DateTimeFormat("zh-CN", { weekday: "short" }).format(
+    new Date(`${value}T00:00:00`)
+  );
 }
 
 function csvCell(value) {

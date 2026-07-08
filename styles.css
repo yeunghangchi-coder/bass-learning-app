@@ -138,6 +138,13 @@ h2 {
   align-items: start;
 }
 
+.insights-panel {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(280px, 0.9fr);
+  gap: 18px;
+  margin-bottom: 18px;
+}
+
 .install-card {
   display: flex;
   align-items: center;
@@ -176,6 +183,8 @@ h2 {
 
 .entry-form,
 .records-panel,
+.plan-card,
+.week-card,
 .timer-card,
 .quick-card {
   border: 1px solid var(--line);
@@ -185,11 +194,131 @@ h2 {
 }
 
 .entry-form,
+.plan-card,
+.week-card,
 .timer-card,
 .quick-card {
   display: grid;
   gap: 14px;
   padding: 22px;
+}
+
+.entry-form summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  list-style: none;
+  cursor: pointer;
+}
+
+.entry-form summary::-webkit-details-marker {
+  display: none;
+}
+
+.entry-form summary span {
+  font-size: 1.08rem;
+  font-weight: 850;
+}
+
+.entry-form summary small {
+  color: var(--muted);
+  font-weight: 750;
+}
+
+.details-form {
+  display: grid;
+  gap: 14px;
+  padding-top: 14px;
+}
+
+.plan-total {
+  flex: 0 0 auto;
+  padding: 7px 10px;
+  border-radius: 999px;
+  background: rgba(198, 64, 47, 0.1);
+  color: var(--accent-dark);
+  font-size: 0.9rem;
+  font-weight: 850;
+}
+
+.plan-steps {
+  display: grid;
+  gap: 8px;
+}
+
+.plan-step {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 11px 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fffdf8;
+}
+
+.plan-step span {
+  font-weight: 800;
+}
+
+.plan-step strong {
+  color: var(--accent-dark);
+  white-space: nowrap;
+}
+
+.week-summary {
+  display: grid;
+  gap: 4px;
+}
+
+.week-summary strong {
+  font-size: 1.7rem;
+  line-height: 1;
+}
+
+.week-summary span,
+.week-focus {
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.week-bars {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 8px;
+  align-items: end;
+  min-height: 112px;
+}
+
+.week-bar {
+  display: grid;
+  gap: 7px;
+  min-width: 0;
+  text-align: center;
+}
+
+.bar-track {
+  display: flex;
+  align-items: end;
+  justify-content: center;
+  height: 78px;
+  border-radius: 999px;
+  background: rgba(234, 223, 206, 0.72);
+  overflow: hidden;
+}
+
+.bar-track span {
+  display: block;
+  width: 100%;
+  border-radius: 999px 999px 0 0;
+  background: var(--accent);
+}
+
+.week-bar small {
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 800;
 }
 
 label,
@@ -556,6 +685,7 @@ textarea:focus {
   }
 
   .layout,
+  .insights-panel,
   .quick-panel {
     grid-template-columns: 1fr;
   }
@@ -563,6 +693,8 @@ textarea:focus {
   .entry-form,
   .records-panel,
   .install-card,
+  .plan-card,
+  .week-card,
   .timer-card,
   .quick-card {
     padding: 16px;

@@ -50,6 +50,30 @@
         </article>
       </section>
 
+      <section class="insights-panel" aria-label="练习计划和周报">
+        <article class="plan-card">
+          <div class="panel-heading">
+            <div>
+              <p class="section-kicker">今日练习计划</p>
+              <h2 id="planTitle">15 分钟基础稳拍</h2>
+            </div>
+            <span class="plan-total" id="planTotal">15 分</span>
+          </div>
+          <div class="plan-steps" id="planSteps"></div>
+          <button class="ghost-button full-width" id="usePlanButton" type="button">使用这个计划</button>
+        </article>
+
+        <article class="week-card">
+          <p class="section-kicker">本周统计</p>
+          <div class="week-summary">
+            <strong id="weekMinutes">0 分钟</strong>
+            <span id="weekDays">本周还没开始记录</span>
+          </div>
+          <div class="week-bars" id="weekBars" aria-label="本周每天练习时长"></div>
+          <p class="week-focus" id="weekFocus">多练几次后，这里会显示你最近最常练的方向。</p>
+        </article>
+      </section>
+
       <section class="quick-panel" aria-label="快速记录">
         <div class="timer-card">
           <p class="section-kicker">免输入计时</p>
@@ -83,73 +107,80 @@
       </section>
 
       <section class="layout">
-        <form class="entry-form" id="entryForm">
-          <div class="panel-heading">
-            <h2>细节</h2>
-            <button class="text-button" id="todayButton" type="button">今天</button>
-          </div>
+        <details class="entry-form" id="detailsPanel">
+          <summary>
+            <span>细节记录</span>
+            <small>日期、备注、手感</small>
+          </summary>
 
-          <label>
-            日期
-            <input id="dateInput" name="date" type="date" required />
-          </label>
-
-          <label>
-            练习时长（分钟）
-            <input
-              id="minutesInput"
-              name="minutes"
-              type="number"
-              min="1"
-              max="600"
-              placeholder="例如 25"
-              required
-            />
-          </label>
-
-          <label>
-            练习内容
-            <input
-              id="topicInput"
-              name="topic"
-              type="text"
-              placeholder="例如 空弦节奏、爬格子、Seven Nation Army"
-              required
-            />
-          </label>
-
-          <fieldset>
-            <legend>练习类型</legend>
-            <div class="chips" id="typeChips">
-              <label><input type="radio" name="type" value="节奏" checked />节奏</label>
-              <label><input type="radio" name="type" value="指法" />指法</label>
-              <label><input type="radio" name="type" value="歌曲" />歌曲</label>
-              <label><input type="radio" name="type" value="乐理" />乐理</label>
+          <form class="details-form" id="entryForm">
+            <div class="panel-heading">
+              <h2>细节</h2>
+              <button class="text-button" id="todayButton" type="button">今天</button>
             </div>
-          </fieldset>
 
-          <label>
-            今天的手感
-            <select id="moodInput" name="mood">
-              <option value="稳了一点">稳了一点</option>
-              <option value="有点卡">有点卡</option>
-              <option value="很顺">很顺</option>
-              <option value="需要复习">需要复习</option>
-            </select>
-          </label>
+            <label>
+              日期
+              <input id="dateInput" name="date" type="date" required />
+            </label>
 
-          <label class="notes-field">
-            备注
-            <textarea
-              id="notesInput"
-              name="notes"
-              rows="4"
-              placeholder="可不填。想记的时候再写。"
-            ></textarea>
-          </label>
+            <label>
+              练习时长（分钟）
+              <input
+                id="minutesInput"
+                name="minutes"
+                type="number"
+                min="1"
+                max="600"
+                placeholder="例如 25"
+                required
+              />
+            </label>
 
-          <button class="primary-button" type="submit">保存记录</button>
-        </form>
+            <label>
+              练习内容
+              <input
+                id="topicInput"
+                name="topic"
+                type="text"
+                placeholder="例如 空弦节奏、爬格子、Seven Nation Army"
+                required
+              />
+            </label>
+
+            <fieldset>
+              <legend>练习类型</legend>
+              <div class="chips" id="typeChips">
+                <label><input type="radio" name="type" value="节奏" checked />节奏</label>
+                <label><input type="radio" name="type" value="指法" />指法</label>
+                <label><input type="radio" name="type" value="歌曲" />歌曲</label>
+                <label><input type="radio" name="type" value="乐理" />乐理</label>
+              </div>
+            </fieldset>
+
+            <label>
+              今天的手感
+              <select id="moodInput" name="mood">
+                <option value="稳了一点">稳了一点</option>
+                <option value="有点卡">有点卡</option>
+                <option value="很顺">很顺</option>
+                <option value="需要复习">需要复习</option>
+              </select>
+            </label>
+
+            <label class="notes-field">
+              备注
+              <textarea
+                id="notesInput"
+                name="notes"
+                rows="4"
+                placeholder="可不填。想记的时候再写。"
+              ></textarea>
+            </label>
+
+            <button class="primary-button" type="submit">保存记录</button>
+          </form>
+        </details>
 
         <section class="records-panel">
           <div class="panel-heading">
