@@ -18,18 +18,21 @@
           <h1>今天练了没？</h1>
         </div>
         <div class="top-actions">
-          <button class="install-button" id="installButton" type="button">装到手机</button>
+          <button class="install-button" id="installButton" type="button" hidden>装到手机</button>
           <button class="ghost-button compact-only" id="exportButton" type="button">导出</button>
         </div>
       </section>
 
-      <section class="install-card" id="installCard" aria-label="安装到手机">
+      <section class="install-card" id="installCard" aria-label="安装到手机" hidden>
         <div>
           <p class="section-kicker">手机 app 模式</p>
           <h2 id="installTitle">可以装到手机主屏幕</h2>
           <p id="installHint">点“装到手机”查看步骤。安装后会像普通 app 一样从主屏幕打开。</p>
         </div>
-        <button class="primary-button" id="installCardButton" type="button">装到手机</button>
+        <div class="install-card-actions">
+          <button class="primary-button" id="installCardButton" type="button">装到手机</button>
+          <button class="ghost-button" id="dismissInstallButton" type="button">不再提示</button>
+        </div>
       </section>
 
       <section class="dashboard" aria-label="学习概览">

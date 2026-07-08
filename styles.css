@@ -68,6 +68,10 @@ button {
   gap: 10px;
 }
 
+[hidden] {
+  display: none !important;
+}
+
 .eyebrow {
   margin: 0 0 6px;
   color: var(--accent-dark);
@@ -145,6 +149,12 @@ h2 {
   border-radius: 8px;
   background: #fff8eb;
   box-shadow: var(--shadow);
+}
+
+.install-card-actions {
+  display: grid;
+  gap: 10px;
+  min-width: min(260px, 100%);
 }
 
 .install-card h2 {
@@ -564,6 +574,7 @@ textarea:focus {
   }
 
   .install-card .primary-button,
+  .install-card .ghost-button,
   .install-button,
   .ghost-button {
     width: 100%;

@@ -1,4 +1,5 @@
 const STORAGE_KEY = "bass-learning-records";
+const INSTALL_DISMISSED_KEY = "bass-learning-install-dismissed";
 
 const form = document.querySelector("#entryForm");
 const recordsList = document.querySelector("#recordsList");
@@ -25,6 +26,7 @@ const saveTimerButton = document.querySelector("#saveTimerButton");
 const installButton = document.querySelector("#installButton");
 const installCard = document.querySelector("#installCard");
 const installCardButton = document.querySelector("#installCardButton");
+const dismissInstallButton = document.querySelector("#dismissInstallButton");
 const installDialog = document.querySelector("#installDialog");
 const closeInstallDialog = document.querySelector("#closeInstallDialog");
 const installTitle = document.querySelector("#installTitle");
@@ -149,6 +151,10 @@ saveTimerButton.addEventListener("click", () => {
 
 installButton.addEventListener("click", openInstallFlow);
 installCardButton.addEventListener("click", openInstallFlow);
+dismissInstallButton.addEventListener("click", () => {
+  localStorage.setItem(INSTALL_DISMISSED_KEY, "1");
+  hideInstallPrompt();
+});
 closeInstallDialog.addEventListener("click", () => installDialog.close());
 
 window.addEventListener("beforeinstallprompt", (event) => {
@@ -160,7 +166,8 @@ window.addEventListener("beforeinstallprompt", (event) => {
 
 window.addEventListener("appinstalled", () => {
   deferredInstallPrompt = null;
-  installCard.hidden = true;
+  localStorage.setItem(INSTALL_DISMISSED_KEY, "1");
+  hideInstallPrompt();
 });
 
 updateInstallMessage();
@@ -182,14 +189,17 @@ function openInstallFlow() {
 }
 
 function updateInstallMessage() {
-  const isStandalone =
-    window.matchMedia("(display-mode: standalone)").matches || navigator.standalone;
+  const isStandalone = isRunningInstalled();
   const isFilePreview = location.protocol === "file:";
+  const dismissed = localStorage.getItem(INSTALL_DISMISSED_KEY) === "1";
 
-  if (isStandalone) {
-    installCard.hidden = true;
+  if (isStandalone || dismissed) {
+    hideInstallPrompt();
     return;
   }
+
+  installCard.hidden = false;
+  installButton.hidden = false;
 
   if (isFilePreview) {
     installTitle.textContent = "先发布，再装到手机";
@@ -199,6 +209,21 @@ function updateInstallMessage() {
   }
 
   fileModeNotice.hidden = true;
+}
+
+function hideInstallPrompt() {
+  installCard.hidden = true;
+  installButton.hidden = true;
+}
+
+function isRunningInstalled() {
+  return (
+    window.matchMedia("(display-mode: standalone)").matches ||
+    window.matchMedia("(display-mode: fullscreen)").matches ||
+    window.matchMedia("(display-mode: minimal-ui)").matches ||
+    window.navigator.standalone === true ||
+    document.referrer.startsWith("android-app://")
+  );
 }
 
 function addRecord(values) {
